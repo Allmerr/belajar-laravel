@@ -4,13 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentSluggable\Sluggable;
 use PhpParser\Node\Expr\Cast\Array_;
 
 class Blog extends Model
 {
-    use HasFactory;
+    use HasFactory, Sluggable;
 
     protected $with = ['category','author'];
+
+    protected $guarded = ['id'];
 
     // function query filter
     public function scopeFilter($query, array $filters){
@@ -43,5 +46,19 @@ class Blog extends Model
 
     public function author(){
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    public function sluggable(): array
+    {
+        return [
+            'slug' => [
+                'source' => 'title'
+            ]
+        ];
     }
 }

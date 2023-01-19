@@ -8,15 +8,23 @@
             <div class="col-md-6">
                 <form action="/blog" method="GET">
                     <select class="form-select mb-2" name="category">
-                        <option selected value="">category</option>
+                        <option value="">category</option>
                         @foreach ($categories as $category)
-                            <option value="{{ $category->slug }}">{{ $category->name }}</option>
+                            @if ($category->slug == request('category'))
+                                <option value="{{ $category->slug }}" selected>{{ $category->name }}</option>
+                            @else
+                                <option value="{{ $category->slug }}">{{ $category->name }}</option>
+                            @endif
                         @endforeach
                     </select>
                     <select class="form-select mb-2" name="author">
-                        <option selected value="">author</option>
+                        <option value="">author</option>
                         @foreach ($authors as $author)
-                            <option value="{{ $author->username }}">{{ $author->name }}</option>
+                            @if ($author->username == request('author'))
+                                <option value="{{ $author->username }}" selected>{{ $author->name }}</option>
+                            @else
+                                <option value="{{ $author->username }}">{{ $author->name }}</option>
+                            @endif
                         @endforeach
                     </select>
                     <div class="input-group mb-3">
@@ -37,15 +45,24 @@
                 <a class="border border-secondary p-1 rounded text-dark" href="/blog/{{ $posts[0]->slug }}">See More</a>
             </div>
             <div class="right">
-                <img src="https://source.unsplash.com/500x500" alt="">
+                @if ($posts[0]->image)
+                <img src="{{ asset("storage/" . $posts[0]->image) }}" alt="">
+                @else
+                <img src="https://source.unsplash.com/500x500" alt="">                    
+                @endif
             </div>
         </div>
         {{-- akhir header --}}
         {{-- body --}}
+        
         <div class="my-card-container mt-5 pb-5">
             @foreach ($posts->skip(1) as $post)
                 <div class="card" style="">
-                    <img src="https://source.unsplash.com/600x600" alt="">
+                    @if ($post->image)
+                    <img src="{{ asset("storage/" . $post->image) }}" alt="" style="max-height:400px; overflow:hidden;">
+                    @else
+                    <img src="https://source.unsplash.com/500x500" alt="">                    
+                    @endif
                     <div class="card-body">
                         <h5 class="card-title">{{ $post->title }}</h5>
                         <p class="card-text" style="color:#acacac;">Create by <a href="/blog?author={{ $post->author->username }}" style="color: #696969">{{ $post->author->name }}</a> in <a href="/blog?category={{ $post->category->slug }}" style="color: #696969">{{ $post->category->name }}</a></p>

@@ -2,8 +2,9 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DashboardBlogController;
 use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\AdminCategoryController;
 use App\Http\Controllers\LoginController;
 
 use App\Models\Blog;
@@ -39,7 +40,17 @@ Route::post('/login', [LoginController::class, 'authenticate'])->middleware('gue
 Route::post('/logout', [LoginController::class, 'logout'])->middleware('auth');
 
 
-Route::get('/register', [RegisterController::class, 'index']);
-Route::post('/register', [RegisterController::class, 'store']);
+Route::get('/register', [RegisterController::class, 'index'])->middleware('guest');
+Route::post('/register', [RegisterController::class, 'store'])->middleware('guest');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth') ;
+Route::get('/dashboard', function (){
+    return view('dashboard.index', [
+        'title' => 'Dashboard'
+    ]);
+})->middleware('auth') ;
+
+Route::get('/dashboard/blog/checkSlug', [DashboardBlogController::class , 'checkSlug'])->middleware('auth');
+Route::resource('/dashboard/blog', DashboardBlogController::class)->middleware('auth');
+
+
+Route::resource('/dashboard/category', AdminCategoryController::class)->middleware('isAdmin');

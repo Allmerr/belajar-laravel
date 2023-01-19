@@ -6,7 +6,11 @@
             <h6 style="color:#696969">Create at {{ $post->created_at }}</h6>
             <p style="color: #acacac;">Made by <a style="color: #696969" href="/blog?author={{ $post->author->username }}">{{ $post->author->name }}</i> in <a style="color: #696969" href="/blog?category={{ $post->category->slug }}">{{ $post->category->name }}</a></p>
             <h1>{{ $post->title }}</h1>
-            <img src="https://source.unsplash.com/500x500" alt="">
+            @if ($post->image)
+            <img src="{{ asset("storage/" . $post->image) }}" alt="" style="max-width:400px; overflow:hidde;">
+            @else
+            <img src="https://source.unsplash.com/500x500" alt="">                    
+            @endif
             {!! $post->body !!}
             <br>
         </div>
